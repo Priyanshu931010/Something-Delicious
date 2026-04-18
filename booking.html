@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Table - Something Delicious</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="p.css">
+    <style>
+        /* Internal styles specific to Booking Page */
+        .booking-section {
+            padding: 4rem 20px;
+            background-color: var(--accent-color);
+            min-height: 80vh;
+        }
+
+        .booking-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .full-width { grid-column: span 2; }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 21, 75, 0.1);
+        }
+
+        /* Availability Badge */
+        .availability-badge {
+            display: inline-block;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .availability-badge.low {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        /* Price & Payment Section */
+        .payment-section {
+            display: none; /* Hidden by default */
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px dashed #eee;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .price-display {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .total-amount {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .payment-card {
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-card:hover, .payment-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 21, 75, 0.05);
+        }
+
+        .payment-card i {
+            font-size: 24px;
+            color: var(--secondary-color);
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .book-btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="p.html">
+                    <img src="logo2-removebg-preview.png" alt="Logo" class="site-logo">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="p.html">Back to Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="booking-section">
+        <div class="booking-container">
+            <h2 class="section-title">Reserve Your Table</h2>
+            
+            <form id="bookingForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" required placeholder="John Doe">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="+91 98765 43210">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required placeholder="john@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date of Booking</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tableType">Select Table Type</label>
+                        <select id="tableType" required onchange="updateBookingDetails()">
+                            <option value="" selected disabled>-- Choose a Table --</option>
+                            <option value="be_one">Be One (Solo) - ₹100</option>
+                            <option value="couple">Couple Table (2 ppl) - ₹250</option>
+                            <option value="friends">Friend Circle (3-6 ppl) - ₹500</option>
+                            <option value="family">Family Table (5-10 ppl) - ₹800</option>
+                        </select>
+                        <div id="availabilityDisplay" class="availability-badge" style="display: none;">
+                            Checking availability...
+                        </div>
+                    </div>
+                </div>
+
+                <div id="paymentSection" class="payment-section">
+                    <div class="price-display">
+                        <p>Booking Reservation Fee</p>
+                        <div class="total-amount" id="priceText">₹0</div>
+                    </div>
+
+                    <label>Select Payment Method:</label>
+                    <div class="payment-options">
+                        <div class="payment-card" onclick="selectPayment(this)">
+                            <i class="fab fa-google-pay"></i>
+                            <span>GPay</span>
+                        </div>
+                        <div class="payment-card" onclick="selectPayment(this)">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>UPI</span>
+                        </div>
+                        <div class="payment-card" onclick="selectPayment(this)">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Card</span>
+                        </div>
+                        <div class="payment-card" onclick="selectPayment(this)">
+                            <i class="fas fa-wallet"></i>
+                            <span>PhonePe</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="book-btn">Confirm & Pay</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p class="copyright">&copy; 2023 Something Delicious. All rights reserved.</p>
+    </footer>
+
+    <script>
+        
+    // Data for availability logic (Visual only)
+    const tableData = {
+        'be_one': { price: 100 },
+        'couple': { price: 250 },
+        'friends': { price: 500 },
+        'family': { price: 800 }
+    };
+
+    function updateBookingDetails() {
+        const typeSelect = document.getElementById('tableType');
+        const selectedValue = typeSelect.value;
+        const paymentSection = document.getElementById('paymentSection');
+        const priceText = document.getElementById('priceText');
+
+        if (selectedValue && tableData[selectedValue]) {
+            priceText.innerText = '₹' + tableData[selectedValue].price;
+            paymentSection.style.display = 'block';
+        }
+    }
+
+    function selectPayment(element) {
+        document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
+        element.classList.add('selected');
+    }
+
+    // --- CONNECT TO BACKEND ---
+    document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            date: document.getElementById('date').value,
+            tableType: document.getElementById('tableType').value,
+            paymentMethod: document.querySelector('.payment-card.selected span')?.innerText || 'Not Selected',
+            amount: document.getElementById('priceText').innerText
+        };
+
+        try {
+            // Send data to your running Node.js server
+            const response = await fetch('http://localhost:3000/api/book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(`🎉 Success! Booking ID: ${result.bookingId}\n\n${result.message}`);
+            } else {
+                alert('⚠️ Error: ' + result.message);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Could not connect to server. Make sure "node server.js" is running in the terminal!');
+        }
+    });
+
+    // Set minimum date to today
+    document.getElementById('date').min = new Date().toISOString().split("T")[0];
+    </script>
+
+</body>
+</html>
