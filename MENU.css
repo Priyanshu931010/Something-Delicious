@@ -1,0 +1,107 @@
+/* Container Fix: Removed 'pill' styling to show full menu */
+.menu-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.vertical-menu-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Adjusted Border: Added a subtle full border + thick left accent */
+.menu-bar {
+    background: white;
+    border: 1px solid var(--border-color); /* Subtle full border */
+    border-left: 8px solid var(--primary-color); /* Thick purple accent */
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Visible Content: Set to visible by default or expand smoothly */
+.bar-content {
+    max-height: 0; /* Keeps it clean until hover */
+    padding: 0 30px;
+    background: #ffffff;
+    transition: max-height 0.5s ease-in-out, padding 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Expansion Logic: Ensures menu becomes visible on hover */
+.menu-bar:hover .bar-content {
+    max-height: 1000px; /* Large enough to fit all items */
+    padding: 20px 30px;
+}
+
+.menu-bar:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(74, 21, 75, 0.15);
+    border-color: var(--primary-color);
+}
+
+.bar-header {
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+}
+
+.bar-header h3 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Item details styling */
+.item-detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.item-detail:last-child {
+    border-bottom: none;
+}
+
+.item-detail i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    background: rgba(74, 21, 75, 0.1); /* Light purple circle background */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.item-detail strong {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    margin-bottom: 4px;
+}
+
+.item-detail p {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .menu-container { padding: 10px; }
+    .bar-header h3 { font-size: 1.3rem; }
+}
